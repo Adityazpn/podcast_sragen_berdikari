@@ -45,6 +45,7 @@ export async function saveScriptContent(
   scriptId: string,
   content: unknown,
   wordCount: number,
+  mode: "auto" | "manual" = "auto",
 ): Promise<{ ok?: boolean; error?: string; savedAt?: string }> {
   if (!uuid.safeParse(scriptId).success) return { error: "Script tidak valid." };
   if (!content || typeof content !== "object" || (content as { type?: string }).type !== "doc") return { error: "Format naskah tidak valid." };
@@ -56,10 +57,112 @@ export async function saveScriptContent(
     .from("scripts")
     .update({ content, word_count: words })
     .eq("id", scriptId)
-    .select("updated_at")
+    .select("updated_at, title, workspace_id")
     .single();
   if (error || !data) return { error: "Gagal menyimpan. Periksa koneksi Anda." };
+
+  // Version history: setiap simpan manual, dan otomatis paling sering tiap 10 menit saat auto save.
+  const { data: lastVersion } = await ctx.supabase
+    .from("script_versions")
+    .select("created_at")
+    .eq("script_id", scriptId)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  const stale = !lastVersion || Date.now() - new Date(lastVersion.created_at).getTime() > VERSION_INTERVAL_MS;
+  if (mode === "manual" || stale) {
+    await snapshot(ctx, { id: scriptId, workspace_id: data.workspace_id, title: data.title, content, word_count: words }, mode === "manual" ? "Simpan manual" : "Auto save");
+  }
   return { ok: true, savedAt: data.updated_at };
+}
+
+const VERSION_INTERVAL_MS = 10 * 60 * 1000;
+const MAX_VERSIONS = 100;
+
+async function snapshot(
+  ctx: Awaited<ReturnType<typeof getStudioContext>>,
+  s: { id: string; workspace_id: string; title: string; content: unknown; word_count: number },
+  note: string,
+) {
+  const { error } = await ctx.supabase.from("script_versions").insert({
+    workspace_id: s.workspace_id,
+    script_id: s.id,
+    title: s.title,
+    content: s.content,
+    word_count: s.word_count,
+    note,
+    created_by: ctx.userId,
+  });
+  if (error) {
+    console.error("snapshot failed", error.message);
+    return;
+  }
+  // Simpan maksimal 100 versi terakhir per script.
+  const { data: old } = await ctx.supabase
+    .from("script_versions")
+    .select("id")
+    .eq("script_id", s.id)
+    .order("created_at", { ascending: false })
+    .range(MAX_VERSIONS, MAX_VERSIONS + 50);
+  if (old?.length) await ctx.supabase.from("script_versions").delete().in("id", old.map((o) => o.id));
+}
+
+export interface VersionItem {
+  id: string;
+  created_at: string;
+  word_count: number;
+  note: string | null;
+  author: string | null;
+}
+
+export async function listScriptVersions(scriptId: string): Promise<{ versions?: VersionItem[]; error?: string }> {
+  if (!uuid.safeParse(scriptId).success) return { error: "Script tidak valid." };
+  const ctx = await getStudioContext();
+  const { data, error } = await ctx.supabase
+    .from("script_versions")
+    .select("id, created_at, word_count, note, author:profiles(full_name)")
+    .eq("script_id", scriptId)
+    .order("created_at", { ascending: false })
+    .limit(MAX_VERSIONS);
+  if (error) return { error: "Gagal memuat riwayat versi." };
+  return {
+    versions: (data ?? []).map((v) => ({
+      id: v.id,
+      created_at: v.created_at,
+      word_count: v.word_count,
+      note: v.note,
+      author: (v.author as unknown as { full_name: string } | null)?.full_name ?? null,
+    })),
+  };
+}
+
+export async function getScriptVersion(versionId: string): Promise<{ content?: unknown; error?: string }> {
+  if (!uuid.safeParse(versionId).success) return { error: "Versi tidak valid." };
+  const ctx = await getStudioContext();
+  const { data } = await ctx.supabase.from("script_versions").select("content").eq("id", versionId).maybeSingle();
+  if (!data) return { error: "Versi tidak ditemukan." };
+  return { content: data.content };
+}
+
+/** Pulihkan versi lama. Isi saat ini disimpan dulu sebagai versi agar bisa dibatalkan. */
+export async function restoreScriptVersion(versionId: string): Promise<{ content?: unknown; savedAt?: string; error?: string }> {
+  if (!uuid.safeParse(versionId).success) return { error: "Versi tidak valid." };
+  const ctx = await getStudioContext();
+  const { data: v } = await ctx.supabase.from("script_versions").select("script_id, content, word_count, created_at").eq("id", versionId).maybeSingle();
+  if (!v) return { error: "Versi tidak ditemukan." };
+  const { data: cur } = await ctx.supabase.from("scripts").select("id, workspace_id, title, content, word_count").eq("id", v.script_id).single();
+  if (!cur) return { error: "Script tidak ditemukan." };
+  await snapshot(ctx, cur, "Sebelum pemulihan versi");
+  const { data, error } = await ctx.supabase
+    .from("scripts")
+    .update({ content: v.content, word_count: v.word_count })
+    .eq("id", v.script_id)
+    .select("updated_at")
+    .single();
+  if (error || !data) return { error: "Gagal memulihkan versi." };
+  await logActivity(ctx, "restored", "script", v.script_id, cur.title);
+  revalidatePath(`/scripts/${v.script_id}`);
+  return { content: v.content, savedAt: data.updated_at };
 }
 
 const metaSchema = z.object({

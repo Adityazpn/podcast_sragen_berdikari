@@ -59,12 +59,14 @@ Catatan implementasi: auto save script 1,5 detik setelah berhenti mengetik (plus
 - Episode Archive (search, sort, filter, grid/list).
 - Export System: Full Script PDF/DOCX, Questions PDF/DOCX, Guest Profile PDF, Research Notes PDF, Rundown PDF, TXT.
 
-### Phase 3 — Production Features
-- Teleprompter (fullscreen, ukuran font, lebar teks, kecepatan scroll, auto/manual scroll, pause/resume, sorot bagian aktif, fokus dialog host, navigasi cepat).
-- Recording Notes (live notes, momen penting, timestamp, checklist, catatan pasca-rekaman).
-- Team Management (undang anggota via email, role admin/member, akses per project, aktivitas tim). Tabel `project_members` akan ditambahkan untuk akses per project.
-- Version History script (tabel `script_versions`).
-- Activity Logs lengkap.
+### Phase 3 — Production Features ✅
+Catatan implementasi: migrasi `0004_phase3_team_versions.sql` menambah kolom `podcast_projects.restricted`, tabel `project_members` dan `script_versions`, fungsi `can_access_project/episode/script`, serta menulis ulang policy RLS konten agar menghormati akses per project. Tidak ada data yang dihapus.
+
+- Teleprompter (`/teleprompter`): layar penuh, ukuran font, lebar teks, kecepatan scroll, auto/manual scroll, pause/resume, sorot bagian aktif, fokus dialog host, lompat ke PART, pintasan keyboard. Pengaturan tersimpan di browser.
+- Recording Notes (`/recording/[episode]`): stopwatch sesi, catatan live dengan timestamp otomatis, momen penting, pertanyaan tambahan, topik untuk dibahas ulang, checklist (template standar), catatan pasca-rekaman.
+- Team Management (`/team`): undang via email/username, buat akun anggota langsung, ubah role, keluarkan anggota (pemilik dan diri sendiri dilindungi), akses per project (terbuka/terbatas + pilih anggota), aktivitas tim dengan filter anggota & jenis. Pengganti workspace di topbar.
+- Version History script: versi dibuat setiap simpan manual dan otomatis tiap 10 menit saat menulis, maksimal 100 versi per script, pratinjau & pulihkan (isi sebelum pemulihan juga disimpan).
+- Activity Logs: tercatat untuk project, episode, guest, script, pertanyaan, riset, rundown, alur, anggota, dan catatan rekaman.
 
 ### Phase 4 — Quality Assurance
 Pengujian auth, permission database (skrip uji RLS), save/load, export, responsif, error handling, dan keamanan.

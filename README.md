@@ -7,7 +7,7 @@ Stack: Next.js 15, React 19, TypeScript, Tailwind CSS 4, Supabase (Auth, Postgre
 ## 1. Siapkan Supabase
 
 1. Buat project di https://supabase.com (paket gratis cukup). Pilih region **Southeast Asia (Singapore)**.
-2. Buka **SQL Editor → New query**, jalankan file di `supabase/migrations/` secara berurutan (`0001_init.sql`, `0002_username_login.sql`, `0003_conversation_flow.sql`).
+2. Buka **SQL Editor → New query**, jalankan file di `supabase/migrations/` secara berurutan (`0001_init.sql`, `0002_username_login.sql`, `0003_conversation_flow.sql`, `0004_phase3_team_versions.sql`).
 3. Buka **Authentication → URL Configuration**:
    - **Site URL**: `https://podcast.peluangruang.id` (atau `http://localhost:3000` saat lokal)
    - **Redirect URLs**: tambahkan `https://podcast.peluangruang.id/auth/callback` dan `http://localhost:3000/auth/callback`

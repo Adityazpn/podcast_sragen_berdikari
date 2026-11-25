@@ -19,10 +19,9 @@ export interface NavItem {
   icon: LucideIcon;
   /** Fase pengembangan. Item dengan fase > CURRENT_PHASE ditampilkan sebagai "Segera". */
   phase: number;
-  adminOnly?: boolean;
 }
 
-export const CURRENT_PHASE = 2;
+export const CURRENT_PHASE = 3;
 
 export const NAV_ITEMS: NavItem[] = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, phase: 1 },
@@ -34,6 +33,6 @@ export const NAV_ITEMS: NavItem[] = [
   { href: "/rundown", label: "Episode Rundown", icon: ListOrdered, phase: 2 },
   { href: "/teleprompter", label: "Teleprompter", icon: MonitorPlay, phase: 3 },
   { href: "/archive", label: "Episode Archive", icon: Archive, phase: 2 },
-  { href: "/team", label: "Team Management", icon: Users, phase: 3, adminOnly: true },
+  { href: "/team", label: "Team Management", icon: Users, phase: 3 },
   { href: "/settings", label: "Settings", icon: Settings, phase: 1 },
 ];

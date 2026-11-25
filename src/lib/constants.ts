@@ -143,3 +143,25 @@ export const DEFAULT_RUNDOWN = [
 
 export const labelOf = <T extends { value: string; label: string }>(list: readonly T[], v: string | null | undefined) =>
   list.find((x) => x.value === v)?.label ?? v ?? "-";
+
+export const RECORDING_NOTE_TYPES = [
+  { value: "live", label: "Live Note", tone: "neutral" },
+  { value: "important_moment", label: "Important Moment", tone: "danger" },
+  { value: "additional_question", label: "Additional Question", tone: "accent" },
+  { value: "revisit_topic", label: "Topic to Revisit", tone: "warning" },
+  { value: "timestamp", label: "Timestamp", tone: "primary" },
+  { value: "checklist", label: "Checklist", tone: "neutral" },
+  { value: "post_recording", label: "Post-Recording", tone: "success" },
+] as const;
+export type RecordingNoteType = (typeof RECORDING_NOTE_TYPES)[number]["value"];
+
+export const DEFAULT_RECORDING_CHECKLIST = [
+  "Mikrofon host & narasumber sudah dites",
+  "Level audio aman (tidak clipping)",
+  "Kamera & pencahayaan siap",
+  "Rekaman cadangan (backup recorder) aktif",
+  "HP dalam mode senyap",
+  "Naskah & teleprompter siap",
+  "Narasumber sudah di-briefing",
+  "Izin publikasi narasumber sudah disetujui",
+];

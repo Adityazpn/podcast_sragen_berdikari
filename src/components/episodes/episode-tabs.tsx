@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookOpen, FileText, Info, ListChecks, ListOrdered, Route } from "lucide-react";
+import { BookOpen, FileText, Info, ListChecks, ListOrdered, Mic, Route } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /** Navigasi ruang kerja satu episode. */
@@ -15,6 +15,7 @@ export function EpisodeTabs({ episodeId, projectId }: { episodeId: string; proje
     { href: `/flow/${episodeId}`, label: "Alur Percakapan", icon: Route },
     { href: `/rundown/${episodeId}`, label: "Rundown", icon: ListOrdered },
     { href: `/research?episode=${episodeId}`, match: "/research", label: "Riset", icon: BookOpen },
+    { href: `/recording/${episodeId}`, label: "Catatan Rekaman", icon: Mic },
   ];
   return (
     <nav className="mb-6 flex gap-1 overflow-x-auto border-b border-border" aria-label="Ruang kerja episode">

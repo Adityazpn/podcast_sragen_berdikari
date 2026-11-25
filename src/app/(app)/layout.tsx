@@ -27,6 +27,8 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           avatarUrl={avatarUrl}
           role={ctx.role}
           workspaceName={ctx.workspace.name}
+          workspaceId={ctx.workspace.id}
+          workspaces={ctx.workspaces.map((w) => ({ id: w.workspace.id, name: w.workspace.name, role: w.role }))}
         />
         <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 lg:px-8 lg:py-8">{children}</main>
       </div>

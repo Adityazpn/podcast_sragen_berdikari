@@ -29,6 +29,7 @@ import {
   Undo2,
   AlertCircle,
   LayoutTemplate,
+  History,
 } from "lucide-react";
 import { toast } from "sonner";
 import { deleteScript, duplicateScript, saveScriptContent, updateScriptMeta } from "@/app/(app)/scripts/actions";
@@ -42,6 +43,7 @@ import { SCRIPT_TEMPLATES, type ScriptTemplateKey } from "@/lib/script/template"
 import type { TNode } from "@/lib/script/types";
 import { cn } from "@/lib/utils";
 import { Dialogue } from "./dialogue-extension";
+import { VersionHistory } from "./version-history";
 
 type SaveState = "saved" | "dirty" | "saving" | "error";
 
@@ -180,6 +182,7 @@ export function ScriptEditor({ script, episode }: ScriptEditorProps) {
   const [title, setTitle] = useState(script.title);
   const [status, setStatus] = useState(script.status);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [historyOpen, setHistoryOpen] = useState(false);
 
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const saving = useRef<Promise<boolean> | null>(null);
@@ -199,7 +202,7 @@ export function ScriptEditor({ script, episode }: ScriptEditorProps) {
     setOutline(items);
   }, []);
 
-  const doSave = useCallback(async (): Promise<boolean> => {
+  const doSave = useCallback(async (mode: "auto" | "manual" = "auto"): Promise<boolean> => {
     const ed = editorRef.current;
     if (!ed) return true;
     if (saving.current) {
@@ -208,7 +211,7 @@ export function ScriptEditor({ script, episode }: ScriptEditorProps) {
     }
     setSaveState("saving");
     const run = (async () => {
-      const res = await saveScriptContent(script.id, ed.getJSON(), countWords(ed.getText({ blockSeparator: " " })));
+      const res = await saveScriptContent(script.id, ed.getJSON(), countWords(ed.getText({ blockSeparator: " " })), mode);
       if (res.error) {
         setSaveState("error");
         toast.error(res.error);
@@ -223,7 +226,7 @@ export function ScriptEditor({ script, episode }: ScriptEditorProps) {
     saving.current = null;
     if (pendingAgain.current) {
       pendingAgain.current = false;
-      return doSave();
+      return doSave(mode);
     }
     return ok;
   }, [script.id]);
@@ -281,12 +284,16 @@ export function ScriptEditor({ script, episode }: ScriptEditorProps) {
     const onKey = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
         e.preventDefault();
-        void flush().then((ok) => ok && toast.success("Naskah tersimpan"));
+        if (timer.current) {
+          clearTimeout(timer.current);
+          timer.current = null;
+        }
+        void doSave("manual").then((ok) => ok && toast.success("Naskah tersimpan"));
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [flush]);
+  }, [doSave]);
 
   // Peringatan bila menutup tab saat ada perubahan belum tersimpan.
   useEffect(() => {
@@ -385,7 +392,7 @@ export function ScriptEditor({ script, episode }: ScriptEditorProps) {
                   clearTimeout(timer.current);
                   timer.current = null;
                 }
-                if (await doSave()) toast.success("Naskah tersimpan");
+                if (await doSave("manual")) toast.success("Naskah tersimpan");
               }}
             >
               <Save /> Simpan
@@ -418,6 +425,17 @@ export function ScriptEditor({ script, episode }: ScriptEditorProps) {
                     </DropdownItem>
                   ))}
                 <DropdownSeparator />
+                <DropdownItem onSelect={() => setHistoryOpen(true)}>
+                  <History /> Riwayat versi
+                </DropdownItem>
+                <DropdownItem
+                  onSelect={async () => {
+                    await flush();
+                    router.push(`/teleprompter/${script.id}`);
+                  }}
+                >
+                  <MonitorPlay /> Buka teleprompter
+                </DropdownItem>
                 <DropdownItem
                   onSelect={async () => {
                     await flush();
@@ -433,7 +451,7 @@ export function ScriptEditor({ script, episode }: ScriptEditorProps) {
                 </DropdownItem>
                 <DropdownItem asChild>
                   <Link href={`/projects/${episode.projectId}/episodes/${episode.id}`}>
-                    <MonitorPlay /> Buka episode
+                    <LayoutTemplate /> Buka episode
                   </Link>
                 </DropdownItem>
                 <DropdownSeparator />
@@ -499,6 +517,19 @@ export function ScriptEditor({ script, episode }: ScriptEditorProps) {
           <p className="mt-2">Auto save aktif: perubahan disimpan otomatis 1,5 detik setelah Anda berhenti mengetik.</p>
         </div>
       </aside>
+
+      <VersionHistory
+        scriptId={script.id}
+        open={historyOpen}
+        onOpenChange={setHistoryOpen}
+        beforeRestore={flush}
+        onRestored={(content, at) => {
+          editor?.commands.setContent(content, { emitUpdate: false });
+          if (editor) refreshStats(editor);
+          setSavedAt(at);
+          setSaveState("saved");
+        }}
+      />
 
       <ConfirmDialog
         open={confirmDelete}
