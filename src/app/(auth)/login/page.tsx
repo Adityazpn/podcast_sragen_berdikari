@@ -8,7 +8,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
   const { next, error } = await searchParams;
   return (
     <>
-      <h1 className="text-2xl font-semibold">Masuk ke Podcast Studio</h1>
+      <h1 className="text-2xl font-semibold">Masuk ke Sukowati Berdikari</h1>
       <p className="mt-1 text-sm text-secondary">Gunakan email atau username dan password akun Anda.</p>
       <div className="mt-8">
         <LoginForm next={next ?? "/dashboard"} linkError={error} />

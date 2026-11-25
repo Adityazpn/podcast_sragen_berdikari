@@ -3,8 +3,8 @@ import { Toaster } from "sonner";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: { default: "Podcast Studio", template: "%s · Podcast Studio" },
-  description: "A Professional Podcast Production Management Workspace.",
+  title: { default: "Sukowati Berdikari", template: "%s · Sukowati Berdikari" },
+  description: "Sukowati Berdikari — Ruang Cerita Perjalanan & Masa Depan. Ruang kerja produksi podcast.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

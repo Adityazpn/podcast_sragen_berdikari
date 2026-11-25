@@ -1,6 +1,6 @@
 "use client";
 
-import { Mic } from "lucide-react";
+import { APP_NAME, Logo } from "@/components/layout/logo";
 import { Button } from "@/components/ui/button";
 import { Field, Input } from "@/components/ui/input";
 import { resetPassword } from "@/app/(auth)/actions";
@@ -12,10 +12,8 @@ export default function ResetPasswordPage() {
     <div className="flex min-h-screen items-center justify-center p-6">
       <div className="w-full max-w-sm">
         <div className="mb-6 flex items-center gap-2 font-semibold">
-          <span className="flex size-8 items-center justify-center rounded-lg bg-accent text-white">
-            <Mic className="size-4" />
-          </span>
-          Podcast Studio
+          <Logo size={40} priority />
+          {APP_NAME}
         </div>
         <h1 className="text-2xl font-semibold">Buat password baru</h1>
         <form action={action} className="mt-8 space-y-4" noValidate>

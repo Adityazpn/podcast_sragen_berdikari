@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Mic } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { APP_NAME, Logo } from "./logo";
 import { CURRENT_PHASE, NAV_ITEMS } from "./nav";
 
 export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
@@ -51,10 +51,8 @@ export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
 export function Brand() {
   return (
     <Link href="/dashboard" className="flex items-center gap-2 px-2 text-base font-semibold">
-      <span className="flex size-8 items-center justify-center rounded-lg bg-accent text-white">
-        <Mic className="size-4" />
-      </span>
-      Podcast Studio
+      <Logo size={36} priority />
+      {APP_NAME}
     </Link>
   );
 }

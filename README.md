@@ -1,4 +1,4 @@
-# Podcast Studio
+# Sukowati Berdikari — Podcast Studio
 
 A Professional Podcast Production Management Workspace. Seluruh pekerjaan dilakukan manual oleh tim, **tanpa fitur AI**.
 

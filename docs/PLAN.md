@@ -1,4 +1,4 @@
-# Podcast Studio — Rencana Implementasi
+# Sukowati Berdikari (Podcast Studio) — Rencana Implementasi
 
 A Professional Podcast Production Management Workspace. **Tanpa fitur AI dalam bentuk apa pun**: semua konten (riset, naskah, pertanyaan, rundown) ditulis manual oleh tim.
 
