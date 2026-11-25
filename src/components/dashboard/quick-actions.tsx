@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { FilePlus2, ListPlus, Mic2, Podcast, UserPlus } from "lucide-react";
 import { Dropdown, DropdownContent, DropdownItem, DropdownLabel, DropdownTrigger } from "@/components/ui/dropdown";
-import { cn } from "@/lib/utils";
 
 const tile =
   "flex items-center gap-3 rounded-xl border border-border bg-surface p-4 text-left text-sm font-medium transition-colors hover:border-accent hover:bg-accent-soft/40";
@@ -36,18 +35,12 @@ export function QuickActions({ projects }: { projects: { id: string; name: strin
       <Link href="/guests/new" className={tile}>
         <UserPlus className="size-5 text-accent" /> Add New Guest
       </Link>
-      <span className={cn(tile, "cursor-not-allowed opacity-60 hover:border-border hover:bg-surface")} aria-disabled="true" title="Tersedia di Phase 2">
-        <FilePlus2 className="size-5 text-secondary" />
-        <span>
-          Create New Script <span className="block text-xs font-normal text-secondary">Phase 2</span>
-        </span>
-      </span>
-      <span className={cn(tile, "cursor-not-allowed opacity-60 hover:border-border hover:bg-surface")} aria-disabled="true" title="Tersedia di Phase 2">
-        <ListPlus className="size-5 text-secondary" />
-        <span>
-          Create New Questions <span className="block text-xs font-normal text-secondary">Phase 2</span>
-        </span>
-      </span>
+      <Link href="/scripts" className={tile}>
+        <FilePlus2 className="size-5 text-accent" /> Create New Script
+      </Link>
+      <Link href="/questions" className={tile}>
+        <ListPlus className="size-5 text-accent" /> Create New Questions
+      </Link>
     </div>
   );
 }

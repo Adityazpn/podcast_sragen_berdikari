@@ -5,9 +5,11 @@ import Link from "next/link";
 import { Trash2, UserRound } from "lucide-react";
 import { saveGuest } from "@/app/(app)/guests/actions";
 import { FormAlert } from "@/app/(auth)/auth-form";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Field, Input, Textarea } from "@/components/ui/input";
+import { MAX_IMAGE_BYTES } from "@/lib/constants";
 import type { Guest } from "@/lib/types";
 
 type Key = keyof Guest;
@@ -99,11 +101,16 @@ export function GuestForm({ guest, photoUrl }: { guest?: Guest; photoUrl?: strin
               accept="image/jpeg,image/png,image/webp"
               onChange={(e) => {
                 const f = e.target.files?.[0];
+                if (f && f.size > MAX_IMAGE_BYTES) {
+                  toast.error("Ukuran gambar maksimal 4 MB.");
+                  e.target.value = "";
+                  return;
+                }
                 setPreview(f ? URL.createObjectURL(f) : photoUrl ?? null);
                 setRemoved(false);
               }}
             />
-            <p className="text-xs text-secondary">JPG, PNG, atau WEBP. Maksimal 5 MB.</p>
+            <p className="text-xs text-secondary">JPG, PNG, atau WEBP. Maksimal 4 MB.</p>
             {fe.photo && <p className="text-xs text-danger">{fe.photo[0]}</p>}
             {guest?.photo_path && !removed && (
               <Button type="button" variant="ghost" size="sm" className="text-danger" onClick={() => { setRemoved(true); setPreview(null); }}>

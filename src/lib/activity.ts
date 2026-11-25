@@ -4,7 +4,7 @@ import type { StudioContext } from "./session";
 export async function logActivity(
   ctx: Pick<StudioContext, "supabase" | "userId" | "workspace">,
   action: "created" | "updated" | "deleted" | "duplicated" | "archived" | "restored",
-  entityType: "project" | "episode" | "guest" | "script" | "question" | "research" | "member" | "workspace",
+  entityType: "project" | "episode" | "guest" | "script" | "question" | "research" | "rundown" | "flow" | "member" | "workspace",
   entityId: string | null,
   entityLabel: string,
 ) {
@@ -36,6 +36,8 @@ export const ENTITY_LABEL: Record<string, string> = {
   script: "script",
   question: "pertanyaan",
   research: "catatan riset",
+  rundown: "rundown",
+  flow: "alur percakapan",
   member: "anggota",
   workspace: "workspace",
 };

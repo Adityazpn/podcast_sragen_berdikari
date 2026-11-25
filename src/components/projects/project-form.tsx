@@ -5,10 +5,11 @@ import Link from "next/link";
 import { ImagePlus, Trash2 } from "lucide-react";
 import { saveProject } from "@/app/(app)/projects/actions";
 import { FormAlert } from "@/app/(auth)/auth-form";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Field, Input, NativeSelect, Textarea } from "@/components/ui/input";
-import { COMMUNICATION_STYLES, LANGUAGES, PROJECT_CATEGORIES } from "@/lib/constants";
+import { COMMUNICATION_STYLES, LANGUAGES, PROJECT_CATEGORIES, MAX_IMAGE_BYTES } from "@/lib/constants";
 import type { PodcastProject } from "@/lib/types";
 
 export function ProjectForm({ project, coverUrl }: { project?: PodcastProject; coverUrl?: string | null }) {
@@ -106,11 +107,16 @@ export function ProjectForm({ project, coverUrl }: { project?: PodcastProject; c
               accept="image/jpeg,image/png,image/webp"
               onChange={(e) => {
                 const f = e.target.files?.[0];
+                if (f && f.size > MAX_IMAGE_BYTES) {
+                  toast.error("Ukuran gambar maksimal 4 MB.");
+                  e.target.value = "";
+                  return;
+                }
                 setPreview(f ? URL.createObjectURL(f) : coverUrl ?? null);
                 setRemoved(false);
               }}
             />
-            <p className="text-xs text-secondary">JPG, PNG, atau WEBP. Maksimal 5 MB.</p>
+            <p className="text-xs text-secondary">JPG, PNG, atau WEBP. Maksimal 4 MB.</p>
             {fe.cover && <p className="text-xs text-danger">{fe.cover[0]}</p>}
             {project?.cover_path && !removed && (
               <Button

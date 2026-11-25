@@ -4,7 +4,9 @@ import { useActionState, useState } from "react";
 import { UserRound } from "lucide-react";
 import { changePassword, updateProfile, updateWorkspace } from "@/app/(app)/settings/actions";
 import { FormAlert } from "@/app/(auth)/auth-form";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { MAX_IMAGE_BYTES } from "@/lib/constants";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Field, Input } from "@/components/ui/input";
 
@@ -47,6 +49,11 @@ export function ProfileForm({
                 accept="image/jpeg,image/png,image/webp"
                 onChange={(e) => {
                   const f = e.target.files?.[0];
+                  if (f && f.size > MAX_IMAGE_BYTES) {
+                    toast.error("Ukuran gambar maksimal 4 MB.");
+                    e.target.value = "";
+                    return;
+                  }
                   setPreview(f ? URL.createObjectURL(f) : avatarUrl);
                 }}
               />

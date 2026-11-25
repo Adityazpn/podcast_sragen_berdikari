@@ -10,7 +10,7 @@ export async function uploadImage(
 ): Promise<{ path?: string; error?: string }> {
   if (!file || file.size === 0) return {};
   if (!IMAGE_TYPES.includes(file.type)) return { error: "Format gambar harus JPG, PNG, atau WEBP." };
-  if (file.size > MAX_IMAGE_BYTES) return { error: "Ukuran gambar maksimal 5 MB." };
+  if (file.size > MAX_IMAGE_BYTES) return { error: "Ukuran gambar maksimal 4 MB." };
 
   const ext = file.type.split("/")[1] === "jpeg" ? "jpg" : file.type.split("/")[1];
   const path = `${ctx.workspace.id}/${crypto.randomUUID()}.${ext}`;

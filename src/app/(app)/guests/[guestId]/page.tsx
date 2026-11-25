@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { Briefcase, Camera, Globe, Mail, Pencil, Phone, UserRound, Video } from "lucide-react";
+import { BookOpen, Briefcase, Camera, Download, Globe, Mail, Pencil, Phone, UserRound, Video } from "lucide-react";
 import { StatusBadge } from "@/components/episodes/status-badge";
 import { GuestDeleteButton } from "@/components/guests/guest-delete";
 import { Badge } from "@/components/ui/badge";
@@ -87,7 +87,17 @@ export default async function GuestDetailPage({ params }: { params: Promise<{ gu
             </div>
           )}
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
+          <Button asChild variant="outline">
+            <Link href={`/research?guest=${g.id}`}>
+              <BookOpen /> Riset
+            </Link>
+          </Button>
+          <Button asChild variant="outline">
+            <a href={`/api/export/guest/${g.id}?format=pdf`}>
+              <Download /> PDF
+            </a>
+          </Button>
           <Button asChild variant="outline">
             <Link href={`/guests/${g.id}/edit`}>
               <Pencil /> Edit

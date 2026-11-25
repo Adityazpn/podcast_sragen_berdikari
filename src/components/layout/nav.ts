@@ -22,7 +22,7 @@ export interface NavItem {
   adminOnly?: boolean;
 }
 
-export const CURRENT_PHASE = 1;
+export const CURRENT_PHASE = 2;
 
 export const NAV_ITEMS: NavItem[] = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, phase: 1 },

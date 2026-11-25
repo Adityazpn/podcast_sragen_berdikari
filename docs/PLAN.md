@@ -48,7 +48,9 @@ Skema dan kebijakan RLS sudah diuji di PostgreSQL 16 lokal: pengguna lain tidak 
 - Guest Database: add, edit, delete, search, filter (profesi, perusahaan), sort, detail, previous episodes, guest history, foto.
 - Loading, error, dan empty state di semua halaman; toast notifikasi.
 
-### Phase 2 — Core Podcast Workspace
+### Phase 2 — Core Podcast Workspace ✅
+Catatan implementasi: auto save script 1,5 detik setelah berhenti mengetik (plus Ctrl+S dan tombol Simpan); estimasi durasi baca = jumlah kata ÷ 130 kata/menit; file riset diunggah langsung dari browser ke Supabase Storage (maks 20 MB) agar tidak terkena batas request Vercel; tabel baru `conversation_flow_items` (migrasi 0003). Export PDF memakai `@react-pdf/renderer`, DOCX memakai `docx`.
+
 - Research Notes (11 kategori, upload PDF/dokumen, link website/YouTube/artikel, terhubung ke guest dan episode).
 - Script Studio dengan Tiptap: 6 PART, blok dialog HOST / GUEST / HOST NOTE / TRANSITION dengan warna berbeda, template, auto save (debounce) + manual save, word count, estimasi durasi baca (kata ÷ 130 kata/menit), duplicate script.
 - Question Builder (12 kategori, follow-up, prioritas, status asked/not asked, drag-and-drop dengan `@dnd-kit`).

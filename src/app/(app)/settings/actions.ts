@@ -27,7 +27,7 @@ export async function updateProfile(_: ActionState, formData: FormData): Promise
   const avatar = formData.get("avatar");
   if (avatar instanceof File && avatar.size > 0) {
     if (!IMAGE_TYPES.includes(avatar.type)) return { fieldErrors: { avatar: ["Format harus JPG, PNG, atau WEBP."] } };
-    if (avatar.size > MAX_IMAGE_BYTES) return { fieldErrors: { avatar: ["Ukuran maksimal 5 MB."] } };
+    if (avatar.size > MAX_IMAGE_BYTES) return { fieldErrors: { avatar: ["Ukuran maksimal 4 MB."] } };
     const ext = avatar.type === "image/jpeg" ? "jpg" : avatar.type.split("/")[1];
     const path = `${ctx.userId}/${crypto.randomUUID()}.${ext}`;
     const { error } = await ctx.supabase.storage.from("avatars").upload(path, avatar, { contentType: avatar.type });
