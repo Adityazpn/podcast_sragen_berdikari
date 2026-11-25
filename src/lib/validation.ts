@@ -45,3 +45,10 @@ export const passwordSchema = z
   .max(72, "Password maksimal 72 karakter")
   .regex(/[A-Za-z]/, "Password harus mengandung huruf")
   .regex(/[0-9]/, "Password harus mengandung angka");
+
+export const usernameSchema = z
+  .string()
+  .trim()
+  .min(3, "Username minimal 3 karakter")
+  .max(30, "Username maksimal 30 karakter")
+  .regex(/^[A-Za-z0-9_.]+$/, "Username hanya boleh huruf, angka, titik, dan garis bawah");

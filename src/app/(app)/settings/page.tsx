@@ -46,7 +46,7 @@ export default async function SettingsPage({ searchParams }: { searchParams: Pro
         ) : tab === "workspace" ? (
           <WorkspaceForm name={ctx.workspace.name} isAdmin={ctx.role === "admin"} />
         ) : (
-          <ProfileForm fullName={ctx.profile.full_name} jobTitle={ctx.profile.job_title ?? ""} avatarUrl={avatarUrl} />
+          <ProfileForm fullName={ctx.profile.full_name} username={ctx.profile.username ?? ""} jobTitle={ctx.profile.job_title ?? ""} avatarUrl={avatarUrl} />
         )}
       </div>
     </>

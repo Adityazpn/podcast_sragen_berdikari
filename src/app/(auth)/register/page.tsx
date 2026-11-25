@@ -17,6 +17,9 @@ export default function RegisterPage() {
         <Field label="Nama lengkap" htmlFor="full_name" error={state?.fieldErrors?.full_name}>
           <Input id="full_name" name="full_name" autoComplete="name" required />
         </Field>
+        <Field label="Username" htmlFor="username" error={state?.fieldErrors?.username} hint="3–30 karakter: huruf, angka, titik, garis bawah. Bisa dipakai untuk login.">
+          <Input id="username" name="username" autoComplete="username" autoCapitalize="none" spellCheck={false} required />
+        </Field>
         <Field label="Email" htmlFor="email" error={state?.fieldErrors?.email}>
           <Input id="email" name="email" type="email" autoComplete="email" required />
         </Field>

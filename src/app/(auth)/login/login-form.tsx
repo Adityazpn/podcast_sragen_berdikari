@@ -13,8 +13,8 @@ export function LoginForm({ next, linkError }: { next: string; linkError?: strin
       {linkError && !state && <FormAlert state={{ error: "Link tidak valid atau sudah kedaluwarsa." }} />}
       <FormAlert state={state} />
       <input type="hidden" name="next" value={next} />
-      <Field label="Email" htmlFor="email" error={state?.fieldErrors?.email}>
-        <Input id="email" name="email" type="email" autoComplete="email" required autoFocus />
+      <Field label="Email atau username" htmlFor="identifier" error={state?.fieldErrors?.identifier}>
+        <Input id="identifier" name="identifier" type="text" autoComplete="username" autoCapitalize="none" spellCheck={false} required autoFocus />
       </Field>
       <Field label="Password" htmlFor="password" error={state?.fieldErrors?.password}>
         <Input id="password" name="password" type="password" autoComplete="current-password" required />

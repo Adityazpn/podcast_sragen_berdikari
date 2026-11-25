@@ -6,15 +6,20 @@ import { logActivity } from "@/lib/activity";
 import { IMAGE_TYPES, MAX_IMAGE_BYTES } from "@/lib/constants";
 import { getStudioContext } from "@/lib/session";
 import type { ActionState } from "@/lib/types";
-import { optionalText, passwordSchema } from "@/lib/validation";
+import { optionalText, passwordSchema, usernameSchema } from "@/lib/validation";
 
 const profileSchema = z.object({
   full_name: z.string().trim().min(2, "Nama minimal 2 karakter").max(100),
+  username: usernameSchema,
   job_title: optionalText(100),
 });
 
 export async function updateProfile(_: ActionState, formData: FormData): Promise<ActionState> {
-  const parsed = profileSchema.safeParse({ full_name: formData.get("full_name"), job_title: formData.get("job_title") ?? "" });
+  const parsed = profileSchema.safeParse({
+    full_name: formData.get("full_name"),
+    username: formData.get("username") ?? "",
+    job_title: formData.get("job_title") ?? "",
+  });
   if (!parsed.success) return { fieldErrors: parsed.error.flatten().fieldErrors };
   const ctx = await getStudioContext();
 
@@ -32,7 +37,10 @@ export async function updateProfile(_: ActionState, formData: FormData): Promise
   }
 
   const { error } = await ctx.supabase.from("profiles").update(patch).eq("id", ctx.userId);
-  if (error) return { error: `Gagal menyimpan profil: ${error.message}` };
+  if (error) {
+    if (error.code === "23505") return { fieldErrors: { username: ["Username sudah dipakai"] } };
+    return { error: `Gagal menyimpan profil: ${error.message}` };
+  }
   revalidatePath("/", "layout");
   return { ok: true, message: "Profil tersimpan." };
 }

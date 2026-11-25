@@ -12,6 +12,7 @@ export type EpisodeStatus =
 export interface Profile {
   id: string;
   full_name: string;
+  username: string | null;
   email: string | null;
   avatar_url: string | null;
   job_title: string | null;

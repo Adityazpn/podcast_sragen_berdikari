@@ -8,7 +8,17 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Field, Input } from "@/components/ui/input";
 
-export function ProfileForm({ fullName, jobTitle, avatarUrl }: { fullName: string; jobTitle: string; avatarUrl: string | null }) {
+export function ProfileForm({
+  fullName,
+  username,
+  jobTitle,
+  avatarUrl,
+}: {
+  fullName: string;
+  username: string;
+  jobTitle: string;
+  avatarUrl: string | null;
+}) {
   const [state, action, pending] = useActionState(updateProfile, null);
   const [preview, setPreview] = useState(avatarUrl);
   return (
@@ -44,6 +54,9 @@ export function ProfileForm({ fullName, jobTitle, avatarUrl }: { fullName: strin
           </div>
           <Field label="Nama lengkap" htmlFor="full_name" error={state?.fieldErrors?.full_name}>
             <Input id="full_name" name="full_name" defaultValue={fullName} required />
+          </Field>
+          <Field label="Username" htmlFor="username" error={state?.fieldErrors?.username} hint="Dipakai untuk login. 3–30 karakter: huruf, angka, titik, garis bawah.">
+            <Input id="username" name="username" defaultValue={username} autoCapitalize="none" spellCheck={false} required />
           </Field>
           <Field label="Jabatan di tim" htmlFor="job_title" error={state?.fieldErrors?.job_title}>
             <Input id="job_title" name="job_title" defaultValue={jobTitle} placeholder="Produser, Host, Researcher..." />
