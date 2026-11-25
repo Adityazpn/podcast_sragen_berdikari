@@ -68,8 +68,11 @@ Catatan implementasi: migrasi `0004_phase3_team_versions.sql` menambah kolom `po
 - Version History script: versi dibuat setiap simpan manual dan otomatis tiap 10 menit saat menulis, maksimal 100 versi per script, pratinjau & pulihkan (isi sebelum pemulihan juga disimpan).
 - Activity Logs: tercatat untuk project, episode, guest, script, pertanyaan, riset, rundown, alur, anggota, dan catatan rekaman.
 
-### Phase 4 — Quality Assurance
-Pengujian auth, permission database (skrip uji RLS), save/load, export, responsif, error handling, dan keamanan.
+### Phase 4 — Quality Assurance ✅
+- Uji izin database otomatis: `scripts/test-rls.sh` menjalankan semua migrasi di Postgres lokal lalu 69 pemeriksaan (`supabase/tests/rls_test.sql`): orang luar tidak bisa membaca/mengubah workspace lain, member tidak bisa mengelola tim atau menghapus project, akses project terbatas berlaku sampai ke script/pertanyaan/rundown/catatan, pemilik workspace terlindungi, storage per workspace, fungsi username.
+- Audit keamanan: semua server action memeriksa sesi; pencarian teks disanitasi; undangan email dicocokkan ke data Supabase Auth (bukan kolom profil yang bisa diubah pengguna); header keamanan HTTP (X-Frame-Options, HSTS, nosniff, Referrer-Policy, Permissions-Policy).
+- Export PDF/DOCX/TXT dirender ulang dan diperiksa.
+- Halaman publik diuji di lebar 375/768/1280 px tanpa scroll horizontal; semua tabel memiliki scroll horizontal di layar kecil; rute terlindungi mengarahkan ke login.
 
 ## 5. Keamanan
 - Password hanya dikelola Supabase Auth (bcrypt); aplikasi tidak pernah menyimpan password.

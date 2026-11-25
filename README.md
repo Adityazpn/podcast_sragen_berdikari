@@ -51,3 +51,12 @@ src/
 supabase/migrations/ skema database + RLS + storage
 docs/PLAN.md         rencana implementasi per fase
 ```
+
+## Uji izin database
+
+```bash
+PGHOST=/path/socket PGPORT=5432 PGUSER=postgres scripts/test-rls.sh
+```
+
+Skrip membuat database sementara di Postgres lokal, menjalankan semua migrasi di atas stub Supabase, lalu menjalankan `supabase/tests/rls_test.sql`. Database dihapus lagi setelah selesai.
+

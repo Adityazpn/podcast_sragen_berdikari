@@ -57,21 +57,34 @@ export async function inviteMember(_: ActionState, formData: FormData): Promise<
   if (isEmail && !emailSchema.safeParse(identifier).success) return { fieldErrors: { identifier: ["Format email tidak valid"] } };
 
   const pattern = identifier.replace(/[\\%_]/g, "\\$&");
-  const { data: existing, error: lookupError } = await admin
+  const { data: candidates, error: lookupError } = await admin
     .from("profiles")
     .select("id, full_name, username")
     .ilike(isEmail ? "email" : "username", pattern)
-    .limit(1);
+    .limit(5);
   if (lookupError) return { error: `Gagal mencari akun: ${lookupError.message}` };
 
-  const found = existing?.[0];
+  // profiles.email bisa diubah pemiliknya, jadi email dicocokkan ulang ke data Supabase Auth.
+  let found = isEmail ? undefined : candidates?.[0];
+  if (isEmail) {
+    for (const c of candidates ?? []) {
+      const { data: u } = await admin.auth.admin.getUserById(c.id);
+      if (u.user?.email?.toLowerCase() === identifier.toLowerCase()) {
+        found = c;
+        break;
+      }
+    }
+  }
   if (found) return addMembership(a.ctx, found.id, role, found.full_name || found.username || identifier);
   if (!isEmail) return { fieldErrors: { identifier: ["Username tidak ditemukan. Gunakan email untuk mengundang orang baru."] } };
 
   const { data: invited, error: inviteError } = await admin.auth.admin.inviteUserByEmail(identifier, {
     redirectTo: `${await siteUrl()}/auth/callback?next=/auth/reset-password`,
   });
-  if (inviteError || !invited.user) return { error: `Gagal mengirim undangan: ${inviteError?.message ?? "tidak diketahui"}` };
+  if (inviteError || !invited.user) {
+    if (/already|registered|exists/i.test(inviteError?.message ?? "")) return { fieldErrors: { identifier: ["Email ini sudah terdaftar. Undang memakai username orang tersebut."] } };
+    return { error: `Gagal mengirim undangan: ${inviteError?.message ?? "tidak diketahui"}` };
+  }
   const res = await addMembership(a.ctx, invited.user.id, role, identifier);
   return res?.ok ? { ok: true, message: `Undangan dikirim ke ${identifier}. Mereka akan diminta membuat password.` } : res;
 }
