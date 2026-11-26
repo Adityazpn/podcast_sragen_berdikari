@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { BookOpen, Briefcase, Camera, Download, Globe, Mail, Pencil, Phone, UserRound, Video } from "lucide-react";
+import { AiGuestAnalysis } from "@/components/ai/ai-guest";
 import { StatusBadge } from "@/components/episodes/status-badge";
 import { GuestDeleteButton } from "@/components/guests/guest-delete";
 import { Badge } from "@/components/ui/badge";
@@ -9,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SavedToast } from "@/components/ui/saved-toast";
 import { ACTION_LABEL } from "@/lib/activity";
+import { aiEnabled } from "@/lib/ai/claude";
 import { STORAGE_BUCKETS } from "@/lib/constants";
 import { getStudioContext } from "@/lib/session";
 import { signedUrls } from "@/lib/storage";
@@ -16,6 +18,7 @@ import type { EpisodeStatus } from "@/lib/types";
 import { formatDate } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Narasumber" };
+export const maxDuration = 120;
 
 export default async function GuestDetailPage({ params }: { params: Promise<{ guestId: string }> }) {
   const { guestId } = await params;
@@ -88,6 +91,7 @@ export default async function GuestDetailPage({ params }: { params: Promise<{ gu
           )}
         </div>
         <div className="flex flex-wrap gap-2">
+          <AiGuestAnalysis guestId={g.id} enabled={aiEnabled()} />
           <Button asChild variant="outline">
             <Link href={`/research?guest=${g.id}`}>
               <BookOpen /> Riset

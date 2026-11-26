@@ -1,6 +1,6 @@
 # Sukowati Berdikari — Podcast Studio
 
-A Professional Podcast Production Management Workspace. Seluruh pekerjaan dilakukan manual oleh tim, **tanpa fitur AI**.
+A Professional Podcast Production Management Workspace. Pekerjaan utama dilakukan tim; fitur AI (Claude) opsional membantu menyusun draf pertanyaan, analisa narasumber, dan teks naskah yang selalu ditinjau manusia.
 
 Stack: Next.js 15, React 19, TypeScript, Tailwind CSS 4, Supabase (Auth, Postgres + RLS, Storage). Rencana lengkap ada di [`docs/PLAN.md`](docs/PLAN.md).
 
@@ -30,7 +30,7 @@ Perintah lain: `npm run typecheck`, `npm run lint`, `npm run build`.
 ## 3. Deploy ke Vercel + domain Hostinger
 
 1. Di https://vercel.com: **Add New → Project → Import** repo `podcast_sragen_berdikari`.
-2. Di **Environment Variables** isi `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, dan `NEXT_PUBLIC_SITE_URL=https://podcast.peluangruang.id`, lalu **Deploy**.
+2. Di **Environment Variables** isi `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, dan `NEXT_PUBLIC_SITE_URL=https://podcast.peluangruang.id`, lalu **Deploy**. Untuk fitur AI tambahkan `ANTHROPIC_API_KEY` (dari console.anthropic.com) lalu deploy ulang.
 3. Di project Vercel: **Settings → Domains → Add** `podcast.peluangruang.id`. Vercel akan menampilkan record DNS yang dibutuhkan (biasanya **CNAME** `podcast` → `cname.vercel-dns.com`).
 4. Di Hostinger hPanel: **Domains → peluangruang.id → DNS / Nameservers**. Hapus record lama untuk `podcast` (A/CNAME), lalu tambahkan CNAME dari langkah 3.
 5. Tunggu propagasi DNS (biasanya beberapa menit, maksimal 24 jam). Vercel memasang SSL otomatis.

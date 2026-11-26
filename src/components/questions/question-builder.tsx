@@ -28,6 +28,7 @@ import {
   updateQuestionFlags,
 } from "@/app/(app)/questions/actions";
 import { Badge } from "@/components/ui/badge";
+import { AiQuestions } from "@/components/ai/ai-questions";
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog, Dialog, DialogContent } from "@/components/ui/dialog";
 import { Dropdown, DropdownContent, DropdownItem, DropdownLabel, DropdownSeparator, DropdownTrigger } from "@/components/ui/dropdown";
@@ -40,7 +41,7 @@ import { QuestionForm, type QuestionData } from "./question-form";
 
 type Result = { error?: string } | null | undefined;
 
-export function QuestionBuilder({ episodeId, questions }: { episodeId: string; questions: QuestionData[] }) {
+export function QuestionBuilder({ episodeId, questions, aiEnabled }: { episodeId: string; questions: QuestionData[]; aiEnabled: boolean }) {
   const router = useRouter();
   const [items, setItems] = useState(questions);
   const [filter, setFilter] = useState<string>("all");
@@ -120,6 +121,7 @@ export function QuestionBuilder({ episodeId, questions }: { episodeId: string; q
                 </DropdownItem>
               </DropdownContent>
             </Dropdown>
+            <AiQuestions episodeId={episodeId} enabled={aiEnabled} />
             <Button onClick={() => setEditing("new")}>
               <Plus /> Tambah pertanyaan
             </Button>

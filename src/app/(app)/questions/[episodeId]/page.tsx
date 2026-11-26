@@ -2,10 +2,12 @@ import type { Metadata } from "next";
 import { EpisodeHeading } from "@/components/episodes/episode-tabs";
 import { QuestionBuilder } from "@/components/questions/question-builder";
 import type { QuestionData } from "@/components/questions/question-form";
+import { aiEnabled } from "@/lib/ai/claude";
 import { getEpisodeRef } from "@/lib/episodes";
 import { getStudioContext } from "@/lib/session";
 
 export const metadata: Metadata = { title: "Question Builder" };
+export const maxDuration = 120;
 
 export default async function QuestionBuilderPage({ params }: { params: Promise<{ episodeId: string }> }) {
   const { episodeId } = await params;
@@ -25,7 +27,7 @@ export default async function QuestionBuilderPage({ params }: { params: Promise<
   return (
     <>
       <EpisodeHeading episode={episode} section="Question Builder" />
-      <QuestionBuilder episodeId={episodeId} questions={questions} />
+      <QuestionBuilder episodeId={episodeId} questions={questions} aiEnabled={aiEnabled()} />
     </>
   );
 }

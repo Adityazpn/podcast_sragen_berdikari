@@ -3,8 +3,8 @@ import type { StudioContext } from "./session";
 
 export async function logActivity(
   ctx: Pick<StudioContext, "supabase" | "userId" | "workspace">,
-  action: "created" | "updated" | "deleted" | "duplicated" | "archived" | "restored",
-  entityType: "project" | "episode" | "guest" | "script" | "question" | "research" | "rundown" | "flow" | "member" | "workspace" | "recording",
+  action: "created" | "updated" | "deleted" | "duplicated" | "archived" | "restored" | "generated",
+  entityType: "project" | "episode" | "guest" | "script" | "question" | "research" | "rundown" | "flow" | "member" | "workspace" | "recording" | "ai",
   entityId: string | null,
   entityLabel: string,
 ) {
@@ -27,6 +27,7 @@ export const ACTION_LABEL: Record<string, string> = {
   duplicated: "menduplikasi",
   archived: "mengarsipkan",
   restored: "memulihkan",
+  generated: "membuat dengan AI",
 };
 
 export const ENTITY_LABEL: Record<string, string> = {
@@ -41,4 +42,5 @@ export const ENTITY_LABEL: Record<string, string> = {
   member: "anggota",
   workspace: "workspace",
   recording: "catatan rekaman",
+  ai: "draf",
 };

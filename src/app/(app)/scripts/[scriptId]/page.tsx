@@ -2,12 +2,14 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { EpisodeHeading } from "@/components/episodes/episode-tabs";
 import { ScriptEditor } from "@/components/script/script-editor";
+import { aiEnabled } from "@/lib/ai/claude";
 import { getEpisodeRef } from "@/lib/episodes";
 import { blankTemplate } from "@/lib/script/template";
 import type { TNode } from "@/lib/script/types";
 import { getStudioContext } from "@/lib/session";
 
 export const metadata: Metadata = { title: "Script Studio" };
+export const maxDuration = 120;
 
 export default async function ScriptPage({ params }: { params: Promise<{ scriptId: string }> }) {
   const { scriptId } = await params;
@@ -32,6 +34,7 @@ export default async function ScriptPage({ params }: { params: Promise<{ scriptI
           updated_at: script.updated_at,
         }}
         episode={{ id: episode.id, title: episode.title, projectId: episode.project.id }}
+        aiEnabled={aiEnabled()}
       />
     </>
   );

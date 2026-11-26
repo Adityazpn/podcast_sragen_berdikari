@@ -30,6 +30,7 @@ import {
   AlertCircle,
   LayoutTemplate,
   History,
+  Sparkles,
 } from "lucide-react";
 import { toast } from "sonner";
 import { deleteScript, duplicateScript, saveScriptContent, updateScriptMeta } from "@/app/(app)/scripts/actions";
@@ -44,6 +45,7 @@ import type { TNode } from "@/lib/script/types";
 import { cn } from "@/lib/utils";
 import { Dialogue } from "./dialogue-extension";
 import { VersionHistory } from "./version-history";
+import { AiScriptDialog } from "@/components/ai/ai-script";
 
 type SaveState = "saved" | "dirty" | "saving" | "error";
 
@@ -171,9 +173,10 @@ function Toolbar({ editor }: { editor: Editor }) {
 export interface ScriptEditorProps {
   script: { id: string; title: string; status: "draft" | "final"; content: TNode; updated_at: string };
   episode: { id: string; title: string; projectId: string };
+  aiEnabled: boolean;
 }
 
-export function ScriptEditor({ script, episode }: ScriptEditorProps) {
+export function ScriptEditor({ script, episode, aiEnabled }: ScriptEditorProps) {
   const router = useRouter();
   const [saveState, setSaveState] = useState<SaveState>("saved");
   const [savedAt, setSavedAt] = useState<string>(script.updated_at);
@@ -183,6 +186,7 @@ export function ScriptEditor({ script, episode }: ScriptEditorProps) {
   const [status, setStatus] = useState(script.status);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
+  const [aiOpen, setAiOpen] = useState(false);
 
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const saving = useRef<Promise<boolean> | null>(null);
@@ -397,6 +401,9 @@ export function ScriptEditor({ script, episode }: ScriptEditorProps) {
             >
               <Save /> Simpan
             </Button>
+            <Button variant="outline" onClick={() => setAiOpen(true)}>
+              <Sparkles /> Susun dengan AI
+            </Button>
             <Dropdown>
               <DropdownTrigger asChild>
                 <Button variant="outline">
@@ -517,6 +524,8 @@ export function ScriptEditor({ script, episode }: ScriptEditorProps) {
           <p className="mt-2">Auto save aktif: perubahan disimpan otomatis 1,5 detik setelah Anda berhenti mengetik.</p>
         </div>
       </aside>
+
+      <AiScriptDialog scriptId={script.id} editor={editor} enabled={aiEnabled} open={aiOpen} onOpenChange={setAiOpen} />
 
       <VersionHistory
         scriptId={script.id}

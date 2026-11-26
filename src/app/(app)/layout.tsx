@@ -18,7 +18,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         <div className="flex-1 overflow-y-auto">
           <SidebarNav />
         </div>
-        <p className="px-3 pt-4 text-xs text-secondary">Produksi manual, tanpa AI.</p>
+        <p className="px-3 pt-4 text-xs text-secondary">Draf AI selalu ditinjau tim.</p>
       </aside>
       <div className="flex min-w-0 flex-1 flex-col">
         <Topbar

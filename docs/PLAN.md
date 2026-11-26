@@ -1,6 +1,6 @@
 # Sukowati Berdikari (Podcast Studio) — Rencana Implementasi
 
-A Professional Podcast Production Management Workspace. **Tanpa fitur AI dalam bentuk apa pun**: semua konten (riset, naskah, pertanyaan, rundown) ditulis manual oleh tim.
+A Professional Podcast Production Management Workspace. Awalnya tanpa AI; atas permintaan pemilik (26 Nov 2026) ditambahkan fitur AI opsional (lihat "Fitur AI").
 
 ## 1. Audit awal
 
@@ -73,6 +73,13 @@ Catatan implementasi: migrasi `0004_phase3_team_versions.sql` menambah kolom `po
 - Audit keamanan: semua server action memeriksa sesi; pencarian teks disanitasi; undangan email dicocokkan ke data Supabase Auth (bukan kolom profil yang bisa diubah pengguna); header keamanan HTTP (X-Frame-Options, HSTS, nosniff, Referrer-Policy, Permissions-Policy).
 - Export PDF/DOCX/TXT dirender ulang dan diperiksa.
 - Halaman publik diuji di lebar 375/768/1280 px tanpa scroll horizontal; semua tabel memiliki scroll horizontal di layar kecil; rute terlindungi mengarahkan ke login.
+
+### Fitur AI (tambahan, opsional)
+- Model: Claude Opus 5.5 lewat `@anthropic-ai/sdk`, dipanggil hanya dari server. Kunci `ANTHROPIC_API_KEY` disimpan di Vercel, tidak pernah dikirim ke browser.
+- Question Builder → **Buat dengan AI**: draf pertanyaan + tujuan + follow-up dari data episode, narasumber, dan riset; tim memilih/mengedit sebelum disimpan.
+- Detail narasumber → **Analisa AI**: ringkasan, keahlian, sudut cerita, topik sensitif, hal yang perlu dicek, usulan pertanyaan; bisa disimpan ke Research Notes.
+- Script Studio → **Susun dengan AI**: blok HOST/GUEST/HOST NOTE/TRANSITION yang bisa diedit lalu disisipkan di posisi kursor.
+- Batas 30 permintaan per pengguna per jam; setiap permintaan tercatat di log aktivitas. Output terstruktur divalidasi Zod. Fallback server-side aktif bila model menolak permintaan.
 
 ## 5. Keamanan
 - Password hanya dikelola Supabase Auth (bcrypt); aplikasi tidak pernah menyimpan password.
